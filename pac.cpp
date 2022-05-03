@@ -3,6 +3,7 @@
 #include <vector>
 #include <complex>// using for the points of obj sqaures 
 
+
 #include "square.h"
 const int PACSIZE = 35;
 const int WALLSIZE = 80;
@@ -13,7 +14,26 @@ int xpos = 100;
 int ypos = 100;
 int vx = 0;
 int vy = 0;
+template<typename T>
 
+bool inrange(T x1, T x2, T x3, T x4) {//this function will return true if var 1 to xar 2 are within range of var 3 to var 4
+	//will not pass an error if the char is equal lol 
+
+	if (x1 == x3 || x2 == x3 || x1 == x4 || x2 == x4) return true;
+	else if (x1 > x2) {
+		if (x3<x1 and x3>x2 || x3 == x1 || x3 == x2) return true;
+		else if (x4<x1 and x4 >x2) return true;
+	}
+	else if (x2 > x1) {
+		if (x3<x2 and x3>x1) return true;
+		else if (x4<x2 and x4 >x1 || x4 == x1 || x4 == x2) return true;
+	}
+	else {
+		return false;
+	}
+
+
+}
 struct points {
 	float x; float y;
 };
@@ -21,8 +41,8 @@ int main()
 {
 	points maptemp[4];
 	points plyr[4];
-	square Player(xpos,ypos,2,40,false,sf::Color::Red);//fukin player 
-	//fucking stupid struct :( :(:( :( this code is painful :(:( 
+	square Player(xpos,ypos,2,40,true,sf::Color::Red);//funkin player 
+	//funking stupid struct :( :(:( :( this code is painful :(:( 
 
 	std::vector<std::vector<square*>> map;//wierd shi that i got to work with the help of critical hex
 	std::vector<square*> extra;//4 sum reason needs a variable that is a ptr and not something else i thinks it's because it needs a pointer and a reference ?
@@ -46,7 +66,7 @@ int main()
 		map.push_back(extra);
 		for (int f = 0; f < 10; f++) {
 
-			map[x].push_back(new square(80 * x +40, 80 * f + 40, 2.0, 80, true, sf::Color::Blue));//bounderies of map
+			map[x].push_back(new square(80 * x +40, 80 * f + 40, 2.0, 40, true, sf::Color::Blue));//bounderies of map
 			if (compare[x][f] == 1) {
 				map[x][f]->type = 1;
 			}
@@ -109,12 +129,8 @@ int main()
 
 		else vy = 0; // The laws of momentum do not apply to Mr. Pac
 		// I/O ---------------------
-		plyr[0] = { Player.x - Player.f , Player.y - Player.ydil };
-		plyr[1] = { Player.x - Player.f , Player.y - Player.ydil };
-		plyr[2] = { Player.x + Player.f , Player.y + Player.ydil };
-		plyr[3] = { Player.x - Player.f , Player.y + Player.ydil };
-		Player.x += vx;
-		Player.y += vy;
+
+		
 		screen.clear(sf::Color::Black);
 
 		for (int cols = 0; cols < 10; cols++) {
@@ -127,39 +143,14 @@ int main()
 					maptemp[2] = { map[cols][rows]->x + map[cols][rows]->f,  map[cols][rows]->y + map[cols][rows]->ydil };//c
 					maptemp[3] = { map[cols][rows]->x - map[cols][rows]->f,  map[cols][rows]->y + map[cols][rows]->ydil };//d
 					
-					for (int x = 0; x < 4; x++) {
-						for (int f = 0; f < 4; f++) {
-							if (plyr[f].x < maptemp[x].x) {
-
-								if (x == 3) {
-									keys[LEFT] = false;
-								}
-								if (x == 2) {
-									keys[RIGHT] = false;
-								}
-
-								if (x == 1) {
-									keys[RIGHT] = false;
-								}
-								else if (x == 0) {
-									keys[LEFT] = false;
-
-
-								}
-
-							}
-							if (plyr[f].y <= maptemp[x].y) {
-								if (x == 2 or x ==4) {
-									keys[UP] = false;
-
-								}
-								else if (x == 0 or x ==3) {
-									keys[DOWN] = false;
-								}
-							}
-						}
-
-
+					if (maptemp[1].x>plyr[0].x and inrange<float>(maptemp[2].y, maptemp[3].y, plyr[0].y, plyr[3].y) == true) {
+						std::cout << "collision\n"; std::cout<<std::endl;
+						keys[LEFT] = false;
+						
+					}
+					if (inrange<float>(maptemp[0].x, maptemp[3].x, plyr[0].x, plyr[3].x) == true and inrange<float>(maptemp[1].y, maptemp[3].y, plyr[0].y, plyr[3].y) == true) {
+						std::cout << "collision\n"; std::cout << std::endl;
+						keys[LEFT] = false;
 					}
 					//fucking gross :(
 					
@@ -173,7 +164,12 @@ int main()
 			}
 			
 		}
-		
+		Player.x += vx;
+		Player.y += vy;
+		plyr[0] = { Player.x - Player.f , Player.y - Player.ydil };
+		plyr[1] = { Player.x + Player.f , Player.y - Player.ydil };
+		plyr[2] = { Player.x + Player.f , Player.y + Player.ydil };
+		plyr[3] = { Player.x - Player.f , Player.y + Player.ydil };
 		Player.update();
 		Player.draw(screen);
 		screen.display();
