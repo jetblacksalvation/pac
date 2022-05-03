@@ -132,7 +132,10 @@ int main()
 
 		
 		screen.clear(sf::Color::Black);
-
+		plyr[0] = { Player.x - Player.f , Player.y - Player.ydil };
+		plyr[1] = { Player.x + Player.f , Player.y - Player.ydil };
+		plyr[2] = { Player.x + Player.f , Player.y + Player.ydil };
+		plyr[3] = { Player.x - Player.f , Player.y + Player.ydil };
 		for (int cols = 0; cols < 10; cols++) {
 			for (int rows = 0; rows < 10; rows++) {
 				
@@ -166,10 +169,7 @@ int main()
 		}
 		Player.x += vx;
 		Player.y += vy;
-		plyr[0] = { Player.x - Player.f , Player.y - Player.ydil };
-		plyr[1] = { Player.x + Player.f , Player.y - Player.ydil };
-		plyr[2] = { Player.x + Player.f , Player.y + Player.ydil };
-		plyr[3] = { Player.x - Player.f , Player.y + Player.ydil };
+
 		Player.update();
 		Player.draw(screen);
 		screen.display();
